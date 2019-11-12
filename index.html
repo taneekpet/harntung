@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <title>
+    ไว้หารตังค์ค่าใช้จ่ายเวลาไปเที่ยวกับเพื่อน
+  </title>
+  <head>
+    <meta charset="utf-8"> 
+    <!-- Bootstrap related -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <!-- main script -->
+    <script src="assets/js/ui.js"></script>
+    <script src="assets/js/calculation.js"></script>
+  </head>
+  <body>
+
+    <div class="insertNewElement form-inline" style="width: 90%; margin: 10px 0 0 5%">
+      <label style="padding-right: 15px">เพิ่มค่าใช้จ่าย:</label>
+      <input type="text" class="form-control" id="newItem" 
+        style="width: 30%; padding-left: 5px;"
+        placeholder="รายการค่าใช้จ่าย">
+      <label style="padding-right: 15px; margin-left: 15px">จำนวนเงิน: </label>
+      <input type="number" class="form-control" id="newItemPrice" 
+        style="width: 25%; padding-left: 5px; margin-left: 5px;"
+        onkeypress="return isNumberUI(event)"
+        placeholder="จำนวนเงิน"
+        value=0
+      >
+      <button class="btn btn-primary" 
+        onclick="return createNewItemUI();"
+        style="margin-left: 15px;"
+      >เพิ่มรายการใช้จ่าย</button>
+    </div>
+
+    <div class="insertNewElement form-inline" style="width: 90%; margin: 10px 0 0 5%">
+      <label style="padding-right: 15px">เพิ่มคน:</label>
+      <input type="text" class="form-control" id="newDistrictName" 
+        style="width: 60%; padding-left: 5px;"
+        placeholder="ชื่อคนที่จะเพิ่ม">
+      <button class="btn btn-primary" 
+        onclick="return createNewPeopleUI();"
+        style="margin-left: 15px;"
+      >เพิ่มคน</button>
+    </div>
+
+    <div class="tableInput form-inline" style="width: 90%; margin: 30px 0 0 5%">
+      <!-- people as column, item as row -->
+      <table class="table">
+        <thead>
+          <tr id="peopleNameColumn">
+            <th scope="col">รายการใช้จ่าย</th>
+            <th scope="col">รวมทุกคน</th>
+          </tr>
+        </thead>
+        <tbody id="itemNameRow">
+          <tr id="summaryBalance" style="color: red">
+            <th scope="row">จ่ายเพิ่ม/ได้คืน</th>
+            <th scope="row">0</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="csvInput" style="width: 90%; margin: 30px 30px 0 5%">
+      <!-- fill table input -->
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">หรือนำเข้าข้อมูลจาก csv file ที่นี่:</span>
+        </div>
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="csvScoreFile">
+          <label class="custom-file-label" for="csvScoreFile">นำเข้าไฟล์</label>
+        </div>
+      </div>
+      <!-- explain csv format -->
+      <br/>
+      # , (ชื่อคนที่ 1), (ชื่อคนที่ 2), ...<br/>
+      (ชื่อค่าใช้จ่ายที่ 1):(ราคา), (เลข 0 ถ้าคนที่ 1 ไม่หาร เลข 1 ถ้าหาร), (เลข 0 ถ้าคนที่ 2 ไม่หาร เลข 1 ถ้าหาร), ...<br/>
+      <br/>
+      <a href="assets/example.csv" download="example.csv">ดาวน์โหลดตัวอย่างไฟล์ csv ที่รองรับ</a>
+      <label style="padding-left: 15px; cursor: pointer; color: blue;" onclick="exportCSV()">
+        ดาวน์โหลดไฟล์ csv จากข้อมูลปัจจุบัน
+      </label>
+    </div>
+
+  </body>
+</html>
