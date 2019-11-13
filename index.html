@@ -47,19 +47,30 @@
 
     <div class="tableInput form-inline" style="width: 90%; margin: 30px 0 0 5%">
       <!-- people as column, item as row -->
-      <table class="table">
+      <table class="table" id="mainTable">
         <thead>
           <tr id="peopleNameColumn">
             <th scope="col">รายการใช้จ่าย</th>
             <th scope="col">รวมทุกคน</th>
           </tr>
         </thead>
-        <tbody id="itemNameRow">
-          <tr id="summaryBalanceRow" style="color: red">
+
+        <!--<tbody id="gggg">
+          <tr style="color: blue">
+            <th scope="row">item</th>
+            <th></th>
+          </tr>
+        </tbody>-->
+
+        <tbody id="summaryBalanceRow">
+          <tr style="color: red">
             <th scope="row">จ่ายเพิ่ม/ได้คืน</th>
-            <th scope="row">0</th>
+            <th>
+              <label style="padding-left: 10px; width: 0%;">0</label>
+            </th>
           </tr>
         </tbody>
+
       </table>
     </div>
 

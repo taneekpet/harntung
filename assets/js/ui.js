@@ -1,12 +1,13 @@
 const tmpOnload = window.onload;
 
-let peopleNameColumn, itemNameRow, summaryBalanceRow, csvScoreFile;
+let peopleNameColumn, itemNameRow, summaryBalanceRow, csvScoreFile, mainTable;
 
 window.onload = function() {
   if(tmpOnload) tmpOnload();
   peopleNameColumn = document.querySelector('thead tr#peopleNameColumn');
   itemNameRow = document.querySelector('table tbody#itemNameRow');
   summaryBalanceRow = document.querySelector('table tr#summaryBalanceRow');
+  mainTable = document.querySelector('table#mainTable');
   csvScoreFile = document.querySelector('input#csvScoreFile');
   csvScoreFile.addEventListener('change', handleCSV);
   calculationReset();
@@ -24,8 +25,8 @@ function handleCSV(evt) {
   reader.readAsText(file)
 }
 
-function isNumberUI(evt) {
-  return isNumber(event.target.value);
+function isNumberUI(event) {
+  return !isNaN(event.target.value);
 }
 
 /*function updateResultUI() {
@@ -74,52 +75,69 @@ function clearInput() {
   }
 }
 
-/*function createNewScoreInput(party, district) {
-  let newInput = document.createElement('input');
-  newInput.type = 'number';
-  newInput.className = 'form-control';
-  newInput.onkeypress = function(event) {
-    return isNumber(event);
-  }
-  newInput.addEventListener('change', () => {
-    setScore(party, district, parseInt(newInput.value));
+function createShareForItemInput(peopleIndex, itemIndex) {
+  let newDiv = document.createElement('div');
+  let newLabel = document.createElement('label');
+  newLabel.innerHTML = '0';
+  newLabel.style = "width: 100px";
+  newLabel.id = 'price_' + itemIndex + '_for_' + peopleIndex;
+  newLabel.style.display = 'inline-block';
+  let newCheck = document.createElement('input');
+  newCheck.type = 'checkbox';
+  newCheck.className = 'form-control';
+  newCheck.addEventListener('change', () => {
+    //setScore(party, district, parseInt(newInput.value));
   });
-  newInput.value = 0;
-  newInput.style = "width: 100px";
-  newInput.id = 'partyId_' + party.id + '_districtId_' + district.id;
-  return newInput;
+  newCheck.checked = true;
+  newCheck.id = 'share_' + itemIndex + '_for_' + peopleIndex;
+  newCheck.style.marginRight = '5px';
+  newDiv.appendChild(newCheck);
+  newDiv.appendChild(newLabel);
+  return newDiv;
 }
 
 function createNewPeopleUI(name, checkList) {
   name = name || document.querySelector('input#newPeopleName').value;
-  applied = applied || document.querySelector('input#newPartyNumPartylist').value;
   if(name === '') {
     alert('ใส่ชื่อคน');
     return;
   }
-  partyId = createNewParty(name, partylistAppliedNum).id;
-  //create UI
-  let newPartyUI = document.createElement('th');
-  newPartyUI.scope = 'col';
-  newPartyUI.id = partyId;
-  newPartyUI.innerHTML = name === novote.name ? name : 'พรรค ' + name;
-  partyNameColumn.appendChild(newPartyUI);
+  const { id: peopleId, index: peopleIndex } = createNewPeople(name, checkList);
 
-  for(let i = 0 ; i < districtNameRow.children.length ; i++) {
-    let child = districtNameRow.children[i];
-    let district = listOfDistrict[child.id];
-    let newScore = document.createElement('td');
-    if(i < districtNameRow.children.length - 3) {
-      newScore.appendChild(createNewScoreInput(listOfParty[partyId], district));
+  //create UI
+  Array.from(mainTable.children).forEach((row, index) => {
+    let newElement;
+    if(index === mainTable.childElementCount - 1) {
+      newElement = document.createElement('th');
+      let newLabel = document.createElement('label');
+      newLabel.id = 'price_sum_for_' + peopleIndex;
+      newLabel.innerHTML = '0';
+      newLabel.style.width = '0%';
+      newLabel.style.paddingLeft = '10px';
+      newElement.appendChild(newLabel);
+      row.children[0].appendChild(newElement);
+      return;
     }
-    else newScore.innerHTML = 0;
-    child.appendChild(newScore);
-  }
+    if(index === 0) {
+      newElement = document.createElement('th');
+      newElement.scope = 'col';
+      newElement.id = peopleId;
+      newElement.innerHTML = name;
+    } else if(index < mainTable.childElementCount - 1) {
+      newElement = document.createElement('th');
+      newElement.scope = 'row';
+      newElement.appendChild(createShareForItemInput(
+        peopleIndex, index - 1
+      ));
+    }
+    const tr = row.children[0];
+    tr.insertBefore(newElement, tr.lastElementChild);
+  });
   return false;
 }
 
 function createNewItemUI(name = false) {
-  name = name || document.querySelector('input#newDistrictName').value;
+  name = name || document.querySelector('input#newItemName').value;
   let districtId = createNewDistrict(name).id;
   //create UI
   let newDistrictUI = document.createElement('tr');
@@ -139,4 +157,4 @@ function createNewItemUI(name = false) {
     districtNameRow.children[districtNameRow.children.length - 3]
   );
   return false;
-}*/
+}
