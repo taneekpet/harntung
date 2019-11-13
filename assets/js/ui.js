@@ -1,6 +1,6 @@
 const tmpOnload = window.onload;
 
-let peopleNameColumn, itemNameRow, summaryBalanceRow, csvScoreFile, mainTable;
+let peopleNameColumn, itemNameRow, summaryBalanceRow, csvScoreFile, mainTable, peopleCount = 0;
 
 window.onload = function() {
   if(tmpOnload) tmpOnload();
@@ -58,7 +58,7 @@ function isNumberUI(event) {
   }
 
   updateSortedResultUI();
-}*/
+}
 
 function clearInput() {
   for(let i = 1 ; i < peopleNameColumn.children.length - 1 ; i++) {
@@ -73,7 +73,7 @@ function clearInput() {
     const child = summaryBalanceRow.children[i];
     summaryBalanceRow.removeChild(child);
   }
-}
+}*/
 
 function createShareForItemInput(peopleIndex, itemIndex) {
   let newDiv = document.createElement('div');
@@ -133,28 +133,47 @@ function createNewPeopleUI(name, checkList) {
     const tr = row.children[0];
     tr.insertBefore(newElement, tr.lastElementChild);
   });
+  peopleCount++;
   return false;
 }
 
-function createNewItemUI(name = false) {
+function createNewItemUI(name = false, price = 0) {
   name = name || document.querySelector('input#newItemName').value;
-  let districtId = createNewDistrict(name).id;
-  //create UI
-  let newDistrictUI = document.createElement('tr');
-  newDistrictUI.id = districtId;
-  let newDistrictInnerUI = document.createElement('th');
-  newDistrictInnerUI.scope = 'row';
-  newDistrictInnerUI.innerHTML = 'เขต ' + name;
-  newDistrictUI.appendChild(newDistrictInnerUI);
-  for(let i = 1 ; i < partyNameColumn.children.length ; i++) {
-    let party = listOfParty[partyNameColumn.children[i].id];
-    let newScore = document.createElement('td');
-    newScore.appendChild(createNewScoreInput(party, listOfDistrict[districtId]));
-    newDistrictUI.appendChild(newScore);
+  price = price || document.querySelector('input#newItemPrice').value;
+  price = parseFloat(price);
+  if(name === '') {
+    alert('ใส่ชื่อรายการค่าใช้จ่าย');
+    return;
   }
-  districtNameRow.insertBefore(
-    newDistrictUI, 
-    districtNameRow.children[districtNameRow.children.length - 3]
-  );
+  let { id: itemId, index: itemIndex } = createNewItem(name, price).id;
+  //create UI
+
+  //name
+  const newRow = document.createElement('tbody');
+  const newTr = document.createElement('tr');
+  const newTh = document.createElement('th');
+  newTh.scope = 'row';
+  newTh.innerHTML = name + '(' + price + ')';
+  newTr.appendChild(newTh);
+
+  //people
+  for(let i = 0 ; i < peopleCount ; i++) {
+    const newTh = document.createElement('th');
+    newTh.appendChild(createShareForItemInput(i, itemIndex));
+    newTr.appendChild(newTh);
+  }
+
+  //sum
+  let newElement = document.createElement('th');
+  let newLabel = document.createElement('label');
+  newLabel.id = 'share_sum_for_' + itemIndex;
+  newLabel.innerHTML = '0';
+  newLabel.style.width = '0%';
+  newLabel.style.paddingLeft = '10px';
+  newElement.appendChild(newLabel);
+  newTr.appendChild(newElement);
+
+  newRow.appendChild(newTr);
+  mainTable.insertBefore(newRow, mainTable.lastElementChild);
   return false;
 }
