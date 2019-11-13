@@ -1,6 +1,6 @@
 const tmpOnload = window.onload;
 
-let peopleNameColumn, itemNameRow, summaryBalanceRow, csvScoreFile, mainTable, peopleCount = 0;
+let peopleNameColumn, itemNameRow, summaryBalanceRow, csvScoreFile, mainTable;
 
 window.onload = function() {
   if(tmpOnload) tmpOnload();
@@ -8,9 +8,9 @@ window.onload = function() {
   itemNameRow = document.querySelector('table tbody#itemNameRow');
   summaryBalanceRow = document.querySelector('table tr#summaryBalanceRow');
   mainTable = document.querySelector('table#mainTable');
-  csvScoreFile = document.querySelector('input#csvScoreFile');
-  csvScoreFile.addEventListener('change', handleCSV);
-  calculationReset();
+  //csvScoreFile = document.querySelector('input#csvScoreFile');
+  //csvScoreFile.addEventListener('change', handleCSV);
+  //calculationReset();
 }
 
 function handleCSV(evt) {
@@ -85,8 +85,8 @@ function createShareForItemInput(peopleIndex, itemIndex) {
   let newCheck = document.createElement('input');
   newCheck.type = 'checkbox';
   newCheck.className = 'form-control';
-  newCheck.addEventListener('change', () => {
-    //setScore(party, district, parseInt(newInput.value));
+  newCheck.addEventListener('change', (event) => {
+    changeBoardTick(peopleIndex, itemIndex, event.target.checked);
   });
   newCheck.checked = true;
   newCheck.id = 'share_' + itemIndex + '_for_' + peopleIndex;
@@ -133,7 +133,7 @@ function createNewPeopleUI(name, checkList) {
     const tr = row.children[0];
     tr.insertBefore(newElement, tr.lastElementChild);
   });
-  peopleCount++;
+  calculateResult();
   return false;
 }
 
@@ -145,7 +145,7 @@ function createNewItemUI(name = false, price = 0) {
     alert('ใส่ชื่อรายการค่าใช้จ่าย');
     return;
   }
-  let { id: itemId, index: itemIndex } = createNewItem(name, price).id;
+  let { id: itemId, index: itemIndex } = createNewItem(name, price);
   //create UI
 
   //name
@@ -175,5 +175,6 @@ function createNewItemUI(name = false, price = 0) {
 
   newRow.appendChild(newTr);
   mainTable.insertBefore(newRow, mainTable.lastElementChild);
+  calculateResult();
   return false;
 }
