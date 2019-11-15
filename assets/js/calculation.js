@@ -128,6 +128,26 @@ function calculateResult() {
       else board[row][col] = 0;
     }
   }
+  sumPrice = {};
+  sumShare = {};
+  totalSum = 0;
+  for(let row = 0 ; row < itemCount ; row++) {
+    sumPrice[row] = 0;
+    for(let col = 0 ; col < peopleCount ; col++) {
+      document.querySelector(`label#price_${row}_for_${col}`).innerHTML = board[row][col];
+      sumPrice[row] += board[row][col] || 0;
+      if(!sumShare[col]) sumShare[col] = 0;
+      sumShare[col] += board[row][col] || 0;
+      totalSum += board[row][col] || 0;
+    }
+  }
+  for(let row = 0 ; row < itemCount ; row++) {
+    document.querySelector(`label#price_sum_for_${row}`).innerHTML = sumPrice[row] || 0;
+  }
+  for(let col = 0 ; col < peopleCount ; col++) {
+    document.querySelector(`label#share_sum_for_${col}`).innerHTML = sumShare[col] || 0;
+  }
+  document.querySelector(`label#total_sum`).innerHTML = totalSum;
   console.log(board, share);
 }
 

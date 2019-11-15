@@ -26,6 +26,12 @@ function handleCSV(evt) {
 }
 
 function isNumberUI(event) {
+  const orig = event.target.value.toString();
+  let i = 0;
+  while(orig[i] === '0') {
+    i++;
+  }
+  event.target.value = orig.substr(i);
   return !isNaN(event.target.value);
 }
 
@@ -110,12 +116,15 @@ function createNewPeopleUI(name, checkList) {
     if(index === mainTable.childElementCount - 1) {
       newElement = document.createElement('th');
       let newLabel = document.createElement('label');
-      newLabel.id = 'price_sum_for_' + peopleIndex;
+      newLabel.id = 'share_sum_for_' + peopleIndex;
       newLabel.innerHTML = '0';
       newLabel.style.width = '0%';
       newLabel.style.paddingLeft = '10px';
       newElement.appendChild(newLabel);
-      row.children[0].appendChild(newElement);
+      row.children[0].insertBefore(
+        newElement,
+        row.children[0].lastElementChild
+      );
       return;
     }
     if(index === 0) {
@@ -134,6 +143,7 @@ function createNewPeopleUI(name, checkList) {
     tr.insertBefore(newElement, tr.lastElementChild);
   });
   calculateResult();
+  document.querySelector('input#newPeopleName').value = '';
   return false;
 }
 
@@ -166,7 +176,7 @@ function createNewItemUI(name = false, price = 0) {
   //sum
   let newElement = document.createElement('th');
   let newLabel = document.createElement('label');
-  newLabel.id = 'share_sum_for_' + itemIndex;
+  newLabel.id = 'price_sum_for_' + itemIndex;
   newLabel.innerHTML = '0';
   newLabel.style.width = '0%';
   newLabel.style.paddingLeft = '10px';
@@ -176,5 +186,7 @@ function createNewItemUI(name = false, price = 0) {
   newRow.appendChild(newTr);
   mainTable.insertBefore(newRow, mainTable.lastElementChild);
   calculateResult();
+  document.querySelector('input#newItemName').value = '';
+  document.querySelector('input#newItemPrice').value = 0;
   return false;
 }
